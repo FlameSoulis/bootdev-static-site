@@ -13,8 +13,8 @@ class TestTextNode(unittest.TestCase):
         node2 = TextNode("This is a text node", TextType.ITALIC)
         self.assertNotEqual(node, node2)
     def test_neq_string(self):
-        node = TextNode("This is a text node", TextType.NORMAL)
-        node2 = TextNode("This is also a text node", TextType.NORMAL)
+        node = TextNode("This is a text node", TextType.TEXT)
+        node2 = TextNode("This is also a text node", TextType.TEXT)
         self.assertNotEqual(node, node2)
     def test_neq_url(self):
         node = TextNode("The best search engine ever", TextType.LINK, "https://bing.com")
