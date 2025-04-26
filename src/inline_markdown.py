@@ -108,8 +108,10 @@ def text_to_textnodes(text):
 
 def markdown_to_blocks(text):
     blocks = text.split("\n\n")
-    for i,block in enumerate(blocks):
-        blocks[i] = block.strip()
-        if len(blocks[i]) == 0:
-            blocks.remove(i)
-    return blocks
+    filtered_blocks = []
+    for block in blocks:
+        if len(block) == 0:
+            continue
+        block = block.strip()
+        filtered_blocks.append(block)
+    return filtered_blocks

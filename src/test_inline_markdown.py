@@ -88,6 +88,8 @@ class TestInlineMarkdown(unittest.TestCase):
 	def test_text_to_textnodes(self):
 		test = text_to_textnodes("This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)")
 		assert len(test) == 10
+		test = text_to_textnodes("")
+		assert test == [TextNode("",TextType.TEXT)]
 	def test_markdown_to_blocks(self):
 		md = """
 This is **bolded** paragraph
