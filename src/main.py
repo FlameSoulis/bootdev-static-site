@@ -67,8 +67,8 @@ def generate_page(from_path, template_path, dest_path, basepath):
 	# Replace everything
 	html_page = template_contents.replace("{{ Title }}", title)
 	html_page = html_page.replace("{{ Content }}", markdown_html)
-	html_page = html_page.replace("href=\"/", basepath)
-	html_page = html_page.replace("src=\"/", basepath)
+	html_page = html_page.replace("href=\"/", f"href={basepath}")
+	html_page = html_page.replace("src=\"/", f"src={basepath}")
 	# Does the desintation actually exist?
 	dest_folder = os.path.dirname(dest_path)
 	if not os.path.exists(dest_folder):
