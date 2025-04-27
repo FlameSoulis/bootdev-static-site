@@ -5,8 +5,8 @@ import sys
 
 def main():
 	basepath = "/"
-	if len(sys.argv[0]) > 0:
-		basepath = sys.argv[0]
+	if len(sys.argv[1]) > 0:
+		basepath = sys.argv[1]
 	print("Clearing docs folder...")
 	clear_docs_folder()
 	print("Copying static files...")
