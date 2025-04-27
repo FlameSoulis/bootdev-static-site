@@ -1,20 +1,24 @@
 from markdown_to_html import *
 import shutil 
 import os
+import sys
 
 def main():
-	print("Clearing public folder...")
-	clear_public_folder()
+	basepath = "/"
+	if len(sys.argv[0]) > 0:
+		basepath = sys.argv[0]
+	print("Clearing docs folder...")
+	clear_docs_folder()
 	print("Copying static files...")
-	copy_static_files("static", "public")
+	copy_static_files("static", "docs")
 	# Generating time
-	generate_pages_recursive("content", "template.html", "public")
-	#generate_page("content/index.md", "template.html", "public/index.html")
+	generate_pages_recursive("content", "template.html", "docs", basepath)
+	#generate_page("content/index.md", "template.html", "docs/index.html")
 
 
-def clear_public_folder():
-	if os.path.exists("public"):
-		shutil.rmtree("public")
+def clear_docs_folder():
+	if os.path.exists("docs"):
+		shutil.rmtree("docs")
 
 def copy_static_files(source, destination, folder=""):
 	# Build a list of files and folders
@@ -35,7 +39,7 @@ def copy_static_files(source, destination, folder=""):
 			# Just copy then!
 			shutil.copy(file_path, desitnatin_path)
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
 	# Sanity check time!
 	if not os.path.exists(from_path):
 		raise Exception(f"\"{from_path}\" does not exist!")
@@ -63,6 +67,8 @@ def generate_page(from_path, template_path, dest_path):
 	# Replace everything
 	html_page = template_contents.replace("{{ Title }}", title)
 	html_page = html_page.replace("{{ Content }}", markdown_html)
+	html_page = html_page.replace("href=\"/", basepath)
+	html_page = html_page.replace("src=\"/", basepath)
 	# Does the desintation actually exist?
 	dest_folder = os.path.dirname(dest_path)
 	if not os.path.exists(dest_folder):
@@ -72,7 +78,7 @@ def generate_page(from_path, template_path, dest_path):
 	newfile.write(html_page)
 	newfile.close()
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
 	files = os.listdir(dir_path_content)
 	for file in files:
 		file_path = os.path.join(dir_path_content, file)
@@ -80,10 +86,10 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
 		if os.path.isfile(file_path):
 			file_info = os.path.splitext(dest_file_path)
 			if file_info[1] == ".md":
-				generate_page(file_path, template_path, file_info[0]+".html")
+				generate_page(file_path, template_path, file_info[0]+".html", basepath)
 		else:
 			print(f"Entering {file_path}...")
-			generate_pages_recursive(file_path, template_path, dest_file_path)
+			generate_pages_recursive(file_path, template_path, dest_file_path, basepath)
 
 
 if __name__ == "__main__":
