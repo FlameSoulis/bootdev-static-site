@@ -8,11 +8,9 @@ def main():
 	print("Copying static files...")
 	copy_static_files("static", "public")
 	# Generating time
-	generate_page("content/index.md", "template.html", "public/index.html")
-	generate_page("content/blog/glorfindel/index.md", "template.html", "public/blog/glorfindel/index.html")
-	generate_page("content/blog/tom/index.md", "template.html", "public/blog/tom/index.html")
-	generate_page("content/blog/majesty/index.md", "template.html", "public/blog/majesty/index.html")
-	generate_page("content/contact/index.md", "template.html", "public/contact/index.html")
+	generate_pages_recursive("content", "template.html", "public")
+	#generate_page("content/index.md", "template.html", "public/index.html")
+
 
 def clear_public_folder():
 	if os.path.exists("public"):
@@ -73,6 +71,20 @@ def generate_page(from_path, template_path, dest_path):
 	newfile = open(dest_path, 'w')
 	newfile.write(html_page)
 	newfile.close()
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+	files = os.listdir(dir_path_content)
+	for file in files:
+		file_path = os.path.join(dir_path_content, file)
+		dest_file_path = os.path.join(dest_dir_path, file)
+		if os.path.isfile(file_path):
+			file_info = os.path.splitext(dest_file_path)
+			if file_info[1] == ".md":
+				generate_page(file_path, template_path, file_info[0]+".html")
+		else:
+			print(f"Entering {file_path}...")
+			generate_pages_recursive(file_path, template_path, dest_file_path)
+
 
 if __name__ == "__main__":
 	main()
