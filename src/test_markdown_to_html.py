@@ -85,7 +85,7 @@ this is paragraph text
 			"<div><blockquote>This is a blockquote block</blockquote><p>this is paragraph text</p></div>",
 		)
 
-	def test_code(self):
+	def test_codeblock(self):
 		md = """
 ```
 This is text that _should_ remain
@@ -98,4 +98,13 @@ the **same** even with inline stuff
 		self.assertEqual(
 			html,
 			"<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
+		)
+	def test_extract_title(self):
+		self.assertEqual(
+			extract_title("# Easy One"),
+			"Easy One"
+		)
+		self.assertEqual(
+			extract_title("## A fake!\n# Easy One\n'''\nprint(ohnoes)```"),
+			"Easy One"
 		)

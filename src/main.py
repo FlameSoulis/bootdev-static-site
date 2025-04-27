@@ -1,8 +1,70 @@
-from textnode import *
+from markdown_to_html import *
+import shutil 
+import os
 
 def main():
-	node1 = TextNode("This is some anchor test", TextType.LINK, "https://flamesoulis.com")
-	print(node1)
+	print("Clearing public folder...")
+	clear_public_folder()
+	print("Copying static files...")
+	copy_static_files("static", "public")
+	# Generating time
+	generate_page("content/index.md", "template.html", "public/index.html")
+
+def clear_public_folder():
+	if os.path.exists("public"):
+		shutil.rmtree("public")
+
+def copy_static_files(source, destination, folder=""):
+	# Build a list of files and folders
+	path_to_check = os.path.join(source, folder)
+	desitnatin_path = os.path.join(destination, folder)
+	files = os.listdir(path_to_check)
+	# Legs go!
+	print(f"Entering {path_to_check} > {desitnatin_path}...")
+	if not os.path.exists(desitnatin_path):
+		os.mkdir(desitnatin_path)
+	for file in files:
+		file_path = os.path.join(path_to_check, file)
+		# Is this a folder?
+		if not os.path.isfile(file_path):
+			#Go go recursive!
+			copy_static_files(path_to_check, desitnatin_path, file)
+		else:
+			# Just copy then!
+			shutil.copy(file_path, desitnatin_path)
+
+def generate_page(from_path, template_path, dest_path):
+	# Sanity check time!
+	if not os.path.exists(from_path):
+		raise Exception(f"\"{from_path}\" does not exist!")
+	if not os.path.isfile(from_path):
+		raise Exception(f"\"{template_path}\" is not a file!")
+	if not os.path.exists(template_path):
+		raise Exception(f"\"{template_path}\" does not exist!")
+	if not os.path.isfile(template_path):
+		raise Exception(f"\"{template_path}\" is not a file!")
+	# Announce things
+	print(f"Generating page from {from_path} to {dest_path} using {template_path}")
+	# Open the file and read the juicy contents
+	markdown_file = open(from_path)
+	markdown_contents = markdown_file.read()
+	markdown_file.close()
+	# Do the same for the contents
+	template_file = open(template_path)
+	template_contents = template_file.read()
+	template_file.close()
+	# Process the markdown
+	markdown_node = markdown_to_html_node(markdown_contents)
+	markdown_html = markdown_node.to_html()
+	# Get the title
+	title = extract_title(markdown_contents)
+	# Replace everything
+	html_page = template_contents.replace("{{ Title }}", title)
+	html_page = html_page.replace("{{ Content }}", markdown_html)
+	# Write it down, WRITE IT DOWN!
+	newfile = open(dest_path, 'w')
+	newfile.write(html_page)
+	newfile.close()
 
 if __name__ == "__main__":
 	main()

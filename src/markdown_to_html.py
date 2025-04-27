@@ -79,3 +79,16 @@ def handle_block_headers(text):
 	filtered_text = text.split(" ",1)
 	header_size = len(filtered_text[0])
 	return ParentNode(f"h{header_size}", text_to_children(filtered_text[1]))
+
+def extract_title(markdown):
+	# First split the stuff up
+	lines = markdown.split("\n")
+	# Run through them
+	for line in lines:
+		#Check if it's a header 'block'
+		if block_to_block_type(line) ==  BlockType.HEADING:
+			# Check if it's an H1
+			split_check = line.split(" ", 1)
+			if split_check[0] == "#":
+				return split_check[1].strip()
+	raise Exception("Header not found in markdown!")

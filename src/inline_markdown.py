@@ -87,11 +87,11 @@ def split_nodes_link(old_nodes):
             new_nodes.append(node)
             continue
         original_text = node.text
-        for image_url in link_urls:
-            sections = original_text.split(f"[{image_url[0]}]({image_url[1]})", 1)
+        for link_url in link_urls:
+            sections = original_text.split(f"[{link_url[0]}]({link_url[1]})", 1)
             if(len(sections[0]) != 0):
                 new_nodes.append(TextNode(sections[0], TextType.TEXT))
-            new_nodes.append(TextNode(image_url[0], TextType.LINK, image_url[1]))
+            new_nodes.append(TextNode(link_url[0], TextType.LINK, link_url[1]))
             original_text = sections[1]
         if(len(original_text) != 0):
                 new_nodes.append(TextNode(original_text, TextType.TEXT))
