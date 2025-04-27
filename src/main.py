@@ -61,6 +61,10 @@ def generate_page(from_path, template_path, dest_path):
 	# Replace everything
 	html_page = template_contents.replace("{{ Title }}", title)
 	html_page = html_page.replace("{{ Content }}", markdown_html)
+	# Does the desintation actually exist?
+	dest_folder = os.path.dirname(dest_path)
+	if not os.path.exists(dest_folder):
+		os.makedirs(dest_folder)
 	# Write it down, WRITE IT DOWN!
 	newfile = open(dest_path, 'w')
 	newfile.write(html_page)
